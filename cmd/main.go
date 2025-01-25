@@ -1,26 +1,42 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
+	"log"
 	"os"
 )
 
+type Developer struct {
+	Name       string `json:"name"`
+	Age        int    `json:"age"`
+	Active     bool   `json:"active"`
+	TechSkills struct {
+		Languages    []string
+		Achievements []string
+	} `json:"tech_skills"`
+}
+
 func main() {
-	for _, url := range os.Args[1:] {
-		resp, err := http.Get(url)
-		if err != nil {
-			fmt.Printf("ошибка fetch: %v\n", err)
-		}
+	var dev Developer
+	LoadData("cmd/developers.json", &dev)
 
-		body, err := io.ReadAll(resp.Body)
-		resp.Body.Close()
-		if err != nil {
-			fmt.Printf("ошибка fetch чтение: %v", err)
-			os.Exit(1)
-		}
+	fmt.Printf("Имя: %s\nВозраст: %d\nАктивный: %t\n", dev.Name, dev.Age, dev.Active)
+	fmt.Println("Навыки:")
+	fmt.Printf("  Языки: %v\n", dev.TechSkills.Languages)
+	fmt.Printf("  Достижения: %v\n", dev.TechSkills.Achievements)
+}
 
-		fmt.Print(body)
+func LoadData(path string, v interface{}) {
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	defer file.Close()
+
+	if err := json.NewDecoder(file).Decode(v); err != nil {
+		log.Fatal(err)
+	}
+
 }
