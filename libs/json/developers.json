@@ -1,0 +1,15 @@
+{
+    "name": "Jacob",
+    "age": 31,
+    "active": true,
+    "tech_skills": {
+        "languages": [
+            "golang",
+            "js"
+        ],
+        "achievements": [
+            "грамота `Русский Медвежонок`",
+            "медаль `Best IT Awards`"
+        ]
+    }
+}
